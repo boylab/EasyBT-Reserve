@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BlueToothKit.iml" filepath="$PROJECT_DIR$/BlueToothKit.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bluetoothkit/bluetoothkit.iml" filepath="$PROJECT_DIR$/bluetoothkit/bluetoothkit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EasyBT.iml" filepath="$PROJECT_DIR$/EasyBT.iml" />
       <module fileurl="file://$PROJECT_DIR$/example/example.iml" filepath="$PROJECT_DIR$/example/example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
     </modules>
   </component>
 </project>

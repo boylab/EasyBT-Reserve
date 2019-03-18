@@ -1,3 +1,20 @@
 <resources>
-    <string name="app_name">BlueToothKit</string>
+    <string name="app_name">EasyBT</string>
+
+    <string name="label_suport_bt">1、设备支持蓝牙</string>
+    <string name="label_needs_btPermission">2、申请权限</string>
+    <string name="label_Open_GPS">3、开启GPS</string>
+    <string name="label_bt_function">4、蓝牙功能</string>
+
+    <string name="show_location_msg">扫描需要定位权限，应用将要申请定位权限</string>
+    <string name="show_location_ok">好的</string>
+    <string name="show_location_no">不给</string>
+    <string name="show_location_denied">拒绝授权！</string>
+    <string name="show_location_neverask">不再询问！</string>
+    <string name="location_non_suport">设备不支持蓝牙！</string>
+    <string name="location_non_permission">权限未申请！</string>
+    <string name="label_openbt">打开蓝牙</string>
+    <string name="label_closebt">关闭蓝牙</string>
+    <string name="label_Scanbt">扫描蓝牙</string>
+
 </resources>
