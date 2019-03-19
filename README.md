@@ -7,7 +7,7 @@ Email : pengle609@163.com
 ```
 
 ### Gradle（后续修改完成）
-~~ ` compile 'com.microape.easybt:easybt:1.0.0' ` ~~
+~~` compile 'com.microape.easybt:easybt:1.0.0' `~~
 
 ## Usage
 
