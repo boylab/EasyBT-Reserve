@@ -3,10 +3,10 @@ package com.microape.easybt.receiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.microape.easybt.callback.BTAdapter;
-import com.microape.easybt.callback.OnBTConnCallBack;
-import com.microape.easybt.callback.OnBTOpenCallBack;
-import com.microape.easybt.callback.OnBTScanCallBack;
+import com.microape.easybt.common.callback.BTAdapter;
+import com.microape.easybt.common.callback.OnBTConnCallBack;
+import com.microape.easybt.common.callback.OnBTOpenCallBack;
+import com.microape.easybt.common.callback.OnBTScanCallBack;
 
 /**
  * Created by pengle on 2018-11-23.

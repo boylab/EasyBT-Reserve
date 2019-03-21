@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.microape.easybt.callback.BTAdapter;
+import com.microape.easybt.common.callback.BTAdapter;
 
 /**
  * Created by pengle on 2018-09-13.

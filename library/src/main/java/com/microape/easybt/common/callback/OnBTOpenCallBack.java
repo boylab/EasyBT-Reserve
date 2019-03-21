@@ -1,4 +1,4 @@
-package com.microape.easybt.callback;
+package com.microape.easybt.common.callback;
 
 /**
  * Created by pengle on 2018-06-28.

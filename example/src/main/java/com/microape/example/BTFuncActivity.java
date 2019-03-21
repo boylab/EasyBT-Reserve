@@ -10,9 +10,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.microape.easybt.EasyBT;
-import com.microape.easybt.callback.OnBTConnCallBack;
-import com.microape.easybt.callback.OnBTOpenCallBack;
-import com.microape.easybt.callback.OnBTScanCallBack;
+import com.microape.easybt.common.callback.OnBTConnCallBack;
+import com.microape.easybt.common.callback.OnBTOpenCallBack;
+import com.microape.easybt.common.callback.OnBTScanCallBack;
 
 import java.util.ArrayList;
 

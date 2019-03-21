@@ -7,9 +7,9 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.microape.easybt.callback.OnBTConnCallBack;
-import com.microape.easybt.callback.OnBTOpenCallBack;
-import com.microape.easybt.callback.OnBTScanCallBack;
+import com.microape.easybt.common.callback.OnBTConnCallBack;
+import com.microape.easybt.common.callback.OnBTOpenCallBack;
+import com.microape.easybt.common.callback.OnBTScanCallBack;
 import com.microape.easybt.receiver.BTReceiverManager;
 import com.microape.easybt.receiver.BTStatus;
 
