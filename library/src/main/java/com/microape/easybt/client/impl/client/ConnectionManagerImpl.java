@@ -1,5 +1,10 @@
 package com.microape.easybt.client.impl.client;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+
 import com.microape.easybt.client.impl.client.action.ActionHandler;
 import com.microape.easybt.client.impl.client.iothreads.IOThreadManager;
 import com.microape.easybt.client.impl.exceptions.ManuallyDisconnectException;
@@ -17,9 +22,9 @@ import com.microape.easybt.core.iocore.interfaces.ISendable;
 import com.microape.easybt.core.utils.SLog;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.SecureRandom;
+import java.util.UUID;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -32,7 +37,7 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
     /**
      * 套接字
      */
-    private volatile Socket mSocket;
+    private volatile BluetoothSocket mSocket;
     /**
      * socket参配项
      */
@@ -76,13 +81,13 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
         String ip = "";
         String port = "";
         if (remoteInfo != null) {
-            ip = remoteInfo.getIp();
-            port = remoteInfo.getPort() + "";
+            ip = remoteInfo.getAddress();
+            port = remoteInfo.getName() + "";
         }
         SLog.i("block connection init with:" + ip + ":" + port);
 
         if (localInfo != null) {
-            SLog.i("binding local addr:" + localInfo.getIp() + " port:" + localInfo.getPort());
+            SLog.i("binding local addr:" + localInfo.getAddress() + " port:" + localInfo.getName());
         }
     }
 
@@ -119,7 +124,7 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
             SLog.i("ReconnectionManager is attached.");
         }
 
-        String info = mRemoteConnectionInfo.getIp() + ":" + mRemoteConnectionInfo.getPort();
+        String info = mRemoteConnectionInfo.getAddress() + ":" + mRemoteConnectionInfo.getName();
         mConnectThread = new ConnectionThread(" Connect thread for " + info);
         mConnectThread.setDaemon(true);
         mConnectThread.start();
@@ -176,39 +181,43 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
     }
 
     private class ConnectionThread extends Thread {
-        public ConnectionThread(String name) {
-            super(name);
+
+        private final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+        public ConnectionThread(String info) {
+            super(info);
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void run() {
             try {
-                try {
-                    mSocket = getSocketByConfig();
-                } catch (Exception e) {
-                    if (mOptions.isDebug()) {
-                        e.printStackTrace();
-                    }
-                    throw new UnConnectException("Create socket failed.", e);
-                }
-                if (mLocalConnectionInfo != null) {
-                    SLog.i("try bind: " + mLocalConnectionInfo.getIp() + " port:" + mLocalConnectionInfo.getPort());
-                    mSocket.bind(new InetSocketAddress(mLocalConnectionInfo.getIp(), mLocalConnectionInfo.getPort()));
+                if (mSocket != null) {
+                    mSocket.close();
+                    Thread.sleep(10);
                 }
 
-                SLog.i("Start connect: " + mRemoteConnectionInfo.getIp() + ":" + mRemoteConnectionInfo.getPort() + " socket server...");
-                mSocket.connect(new InetSocketAddress(mRemoteConnectionInfo.getIp(), mRemoteConnectionInfo.getPort()), mOptions.getConnectTimeoutSecond() * 1000);
-                //关闭Nagle算法,无论TCP数据报大小,立即发送
-                mSocket.setTcpNoDelay(true);
+                BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+                BluetoothDevice btDevice = null;
+
+                if (btDevice == null){
+                    btDevice = btAdapter.getRemoteDevice(mLocalConnectionInfo.getAddress());
+                }
+                if (mSocket == null){
+                    mSocket = btDevice.createRfcommSocketToServiceRecord(uuid);
+                }
+                mSocket.connect();
+                Thread.sleep(10);
+
                 resolveManager();
                 sendBroadcast(IAction.ACTION_CONNECTION_SUCCESS);
-                SLog.i("Socket server: " + mRemoteConnectionInfo.getIp() + ":" + mRemoteConnectionInfo.getPort() + " connect successful!");
+                SLog.i("Socket server: " + mRemoteConnectionInfo.getAddress() + ":" + mRemoteConnectionInfo.getName() + " connect successful!");
             } catch (Exception e) {
                 if (mOptions.isDebug()) {
                     e.printStackTrace();
                 }
                 Exception exception = new UnConnectException(e);
-                SLog.e("Socket server " + mRemoteConnectionInfo.getIp() + ":" + mRemoteConnectionInfo.getPort() + " connect failed! error msg:" + e.getMessage());
+                SLog.e("Socket server " + mRemoteConnectionInfo.getAddress() + ":" + mRemoteConnectionInfo.getName() + " connect failed! error msg:" + e.getMessage());
                 sendBroadcast(IAction.ACTION_CONNECTION_FAILED, exception);
             } finally {
                 isConnectionPermitted = true;
@@ -249,7 +258,7 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
         }
 
         synchronized (this) {
-            String info = mRemoteConnectionInfo.getIp() + ":" + mRemoteConnectionInfo.getPort();
+            String info = mRemoteConnectionInfo.getAddress() + ":" + mRemoteConnectionInfo.getName();
             DisconnectThread thread = new DisconnectThread(exception, "Disconnect Thread for " + info);
             thread.setDaemon(true);
             thread.start();
@@ -363,7 +372,7 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
             return false;
         }
 
-        return mSocket.isConnected() && !mSocket.isClosed();
+        return mSocket.isConnected();
     }
 
     @Override
@@ -386,14 +395,15 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
         return mOptions.getReconnectionManager();
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public ConnectionInfo getLocalConnectionInfo() {
         ConnectionInfo local = super.getLocalConnectionInfo();
         if (local == null) {
             if (isConnect()) {
-                InetSocketAddress address = (InetSocketAddress) mSocket.getLocalSocketAddress();
-                if (address != null) {
-                    local = new ConnectionInfo(address.getHostName(), address.getPort());
+                final BluetoothDevice remoteDevice = mSocket.getRemoteDevice();
+                if (remoteDevice != null){
+                    local = new ConnectionInfo(remoteDevice.getAddress(), remoteDevice.getName());
                 }
             }
         }

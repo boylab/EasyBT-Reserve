@@ -3,15 +3,26 @@ package com.microape.easybt;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.microape.easybt.client.impl.client.ManagerHolder;
+import com.microape.easybt.client.sdk.client.ConnectionInfo;
+import com.microape.easybt.client.sdk.client.OkSocketOptions;
+import com.microape.easybt.client.sdk.client.connection.IConnectionManager;
 import com.microape.easybt.common.callback.OnBTConnCallBack;
 import com.microape.easybt.common.callback.OnBTOpenCallBack;
 import com.microape.easybt.common.callback.OnBTScanCallBack;
+import com.microape.easybt.common.common_interfacies.dispatcher.IRegister;
+import com.microape.easybt.common.common_interfacies.server.IServerActionListener;
+import com.microape.easybt.common.common_interfacies.server.IServerManager;
 import com.microape.easybt.receiver.BTReceiverManager;
 import com.microape.easybt.receiver.BTStatus;
+
+/**
+ * Author：pengle on 2019/3/22 16:29
+ * Email ：pengle609@163.com
+ */
 
 public class EasyBT {
 
@@ -117,19 +128,66 @@ public class EasyBT {
 
     }
 
-    public boolean connDevice(BluetoothDevice bluetoothDevice){
-        boolean isWiFiConn = false;
-        try {
-            // TODO: 2019/3/18 开启蓝牙连接，并建立通讯
-            // TODO: 2019/3/18 开启蓝牙连接，并建立通讯
-            // TODO: 2019/3/18 开启蓝牙连接，并建立通讯
+    private static ManagerHolder holder = ManagerHolder.getInstance();
 
+    /**
+     * 获得一个SocketServer服务器.
+     *
+     * @param serverPort
+     * @return
+     */
+    public static IRegister<IServerActionListener, IServerManager> server(int serverPort) {
+        return (IRegister<IServerActionListener, IServerManager>) holder.getServer(serverPort);
+    }
 
-            throw new InterruptedException();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return isWiFiConn;
+    /**
+     * 开启一个socket通讯通道,参配为默认参配
+     *
+     * @param connectInfo 连接信息{@link ConnectionInfo}
+     * @return 该参数的连接管理器 {@link IConnectionManager} 连接参数仅作为配置该通道的参配,不影响全局参配
+     */
+    public static IConnectionManager open(ConnectionInfo connectInfo) {
+        return holder.getConnection(connectInfo);
+    }
+
+    /**
+     * 开启一个socket通讯通道,参配为默认参配
+     *
+     * @param ssid   需要连接的主机IPV4地址
+     * @param port 需要连接的主机开放的Socket端口号
+     * @return 该参数的连接管理器 {@link IConnectionManager} 连接参数仅作为配置该通道的参配,不影响全局参配
+     */
+    public static IConnectionManager open(String ssid, String port) {
+        ConnectionInfo info = new ConnectionInfo(ssid, port);
+        return holder.getConnection(info);
+    }
+
+    /**
+     * 开启一个socket通讯通道
+     * Deprecated please use {@link EasyBT#open(ConnectionInfo)}@{@link IConnectionManager#option(OkSocketOptions)}
+     *
+     * @param connectInfo 连接信息{@link ConnectionInfo}
+     * @param okOptions   连接参配{@link OkSocketOptions}
+     * @return 该参数的连接管理器 {@link IConnectionManager} 连接参数仅作为配置该通道的参配,不影响全局参配
+     * @deprecated
+     */
+    public static IConnectionManager open(ConnectionInfo connectInfo, OkSocketOptions okOptions) {
+        return holder.getConnection(connectInfo, okOptions);
+    }
+
+    /**
+     * 开启一个socket通讯通道
+     * Deprecated please use {@link EasyBT#open(String, String)}@{@link IConnectionManager#option(OkSocketOptions)}
+     *
+     * @param ssid        需要连接的主机IPV4地址
+     * @param bssid      需要连接的主机开放的Socket端口号
+     * @param okOptions 连接参配{@link OkSocketOptions}
+     * @return 该参数的连接管理器 {@link IConnectionManager}
+     * @deprecated
+     */
+    public static IConnectionManager open(String ssid, String bssid, OkSocketOptions okOptions) {
+        ConnectionInfo info = new ConnectionInfo(ssid, bssid);
+        return holder.getConnection(info, okOptions);
     }
     
 }

@@ -40,12 +40,12 @@ public class OkSocket {
     /**
      * 开启一个socket通讯通道,参配为默认参配
      *
-     * @param ip   需要连接的主机IPV4地址
+     * @param ssid   需要连接的主机IPV4地址
      * @param port 需要连接的主机开放的Socket端口号
      * @return 该参数的连接管理器 {@link IConnectionManager} 连接参数仅作为配置该通道的参配,不影响全局参配
      */
-    public static IConnectionManager open(String ip, int port) {
-        ConnectionInfo info = new ConnectionInfo(ip, port);
+    public static IConnectionManager open(String ssid, String port) {
+        ConnectionInfo info = new ConnectionInfo(ssid, port);
         return holder.getConnection(info);
     }
 
@@ -64,16 +64,16 @@ public class OkSocket {
 
     /**
      * 开启一个socket通讯通道
-     * Deprecated please use {@link OkSocket#open(String, int)}@{@link IConnectionManager#option(OkSocketOptions)}
+     * Deprecated please use {@link OkSocket#open(String, String)}@{@link IConnectionManager#option(OkSocketOptions)}
      *
-     * @param ip        需要连接的主机IPV4地址
-     * @param port      需要连接的主机开放的Socket端口号
+     * @param ssid        需要连接的主机IPV4地址
+     * @param bssid      需要连接的主机开放的Socket端口号
      * @param okOptions 连接参配{@link OkSocketOptions}
      * @return 该参数的连接管理器 {@link IConnectionManager}
      * @deprecated
      */
-    public static IConnectionManager open(String ip, int port, OkSocketOptions okOptions) {
-        ConnectionInfo info = new ConnectionInfo(ip, port);
+    public static IConnectionManager open(String ssid, String bssid, OkSocketOptions okOptions) {
+        ConnectionInfo info = new ConnectionInfo(ssid, bssid);
         return holder.getConnection(info, okOptions);
     }
 }

@@ -10,7 +10,7 @@ import android.text.TextUtils;
  */
 public class BlueToothUtil {
 
-    private final String UNKNOWN_SSID = "<unknown ssid>";
+    private final String UNKNOWN_SSID = "<unknown getAddress>";
     private Context mContext;
     private WifiManager mWifiManager;
 

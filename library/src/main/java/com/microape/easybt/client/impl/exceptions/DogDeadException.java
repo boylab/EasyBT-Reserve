@@ -1,5 +1,8 @@
 package com.microape.easybt.client.impl.exceptions;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 /**
  * Created by xuhao on 2017/6/5.
  */
@@ -21,6 +24,7 @@ public class DogDeadException extends RuntimeException {
         super(cause);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     protected DogDeadException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

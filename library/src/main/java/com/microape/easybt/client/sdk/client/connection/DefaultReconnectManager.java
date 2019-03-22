@@ -53,10 +53,10 @@ public class DefaultReconnectManager extends AbsReconnectionManager {
                 ConnectionInfo originInfo = mConnectionManager.getRemoteConnectionInfo();
                 ConnectionInfo backupInfo = originInfo.getBackupInfo();
                 if (backupInfo != null) {
-                    ConnectionInfo bbInfo = new ConnectionInfo(originInfo.getIp(), originInfo.getPort());
+                    ConnectionInfo bbInfo = new ConnectionInfo(originInfo.getAddress(), originInfo.getName());
                     backupInfo.setBackupInfo(bbInfo);
                     if (!mConnectionManager.isConnect()) {
-                        SLog.i("Prepare switch to the backup line " + backupInfo.getIp() + ":" + backupInfo.getPort() + " ...");
+                        SLog.i("Prepare switch to the backup line " + backupInfo.getAddress() + ":" + backupInfo.getName() + " ...");
                         synchronized (mConnectionManager) {
                             mConnectionManager.switchConnectionInfo(backupInfo);
                         }
@@ -164,7 +164,7 @@ public class DefaultReconnectManager extends AbsReconnectionManager {
                 return;
             }
             ConnectionInfo info = mConnectionManager.getRemoteConnectionInfo();
-            SLog.i("Reconnect the server " + info.getIp() + ":" + info.getPort() + " ...");
+            SLog.i("Reconnect the server " + info.getAddress() + ":" + info.getName() + " ...");
             synchronized (mConnectionManager) {
                 if (!mConnectionManager.isConnect()) {
                     mConnectionManager.connect();
